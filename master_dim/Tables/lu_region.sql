@@ -1,0 +1,20 @@
+CREATE TABLE `master_dim`.`lu_region` (
+  `region_id` int(11) NOT NULL AUTO_INCREMENT,
+  `region_code` char(45) NOT NULL,
+  `region_name` varchar(100) DEFAULT NULL,
+  `region_display_name` varchar(100) DEFAULT NULL,
+  `state_code` char(2) DEFAULT NULL,
+  `region_type_code` int(11) unsigned DEFAULT NULL,
+  `region_type` varchar(50) DEFAULT NULL,
+  `last_update` datetime DEFAULT NULL,
+  `active_flag` bit(1) DEFAULT b'1',
+  `state_name` varchar(100) DEFAULT NULL,
+  `region_lkup` varchar(30) DEFAULT NULL,
+  `last_update_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `country_code` varchar(2) DEFAULT NULL,
+  `country_name` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`region_id`),
+  UNIQUE KEY `region_code_UNIQUE` (`region_code`),
+  UNIQUE KEY `region_id_UNIQUE` (`region_id`),
+  KEY `country_code` (`country_code`)
+) ENGINE=MyISAM AUTO_INCREMENT=161 DEFAULT CHARSET=utf8;
