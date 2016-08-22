@@ -1,0 +1,86 @@
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE DEFINER=`etl`@`%` PROCEDURE `generate_backup_cmd_no_data`(in t_schema varchar(50), in db_pass varchar(50))
+begin
+
+declare s mediumtext;
+declare s2 mediumtext;
+declare stmt varchar(21000);
+declare i integer;
+
+set s = concat('mysqldump -uetl -p', db_pass, ' ', t_schema, ' --no-data --force --skip-lock-tables --skip-triggers ');
+
+#### ignore all temporary tables
+
+
+drop table if exists ww_dev.view_cnt;
+
+prepare stmt from 'create table ww_dev.view_cnt as select count(*) cnt
+ from information_schema.tables where table_name like ''%temp%'' and table_schema=?'
+;
+
+select t_schema into @t_schema;
+
+execute stmt using @t_schema;
+
+select cnt into @view_cnt from ww_dev.view_cnt;
+
+set i = 0;
+
+while i < @view_cnt do
+
+	select concat(' --ignore_table=', group_concat(concat(t_schema, '.', table_name) separator ' --ignore_table=')) t into s2
+		from (	select table_name from information_schema.tables where table_schema=t_schema and table_name like '%temp%' limit 10 offset i ) x;
+	
+	select s2;
+	set s = concat(s, s2);
+
+	set i = i + 10;
+
+end while;
+
+#set s = concat(left(s, length(s) - length(t_schema)));
+#### ignore all views
+
+#select count(*) into @view_cnt
+#from information_schema.views where table_schema = t_schema;
+
+drop table if exists ww_dev.view_cnt;
+
+prepare stmt from 'create table ww_dev.view_cnt as select count(*) cnt
+ from information_schema.views where table_schema=?'
+;
+
+select t_schema into @t_schema;
+
+execute stmt using @t_schema;
+
+select cnt into @view_cnt from ww_dev.view_cnt;
+set i = 0;
+
+while i < @view_cnt do
+
+	#prepare stmt from 'select concat('' --ignore_table='', group_concat(table_name separator '' --ignore_table='')) t 
+	#	from (	select * from information_schema.views where table_schema=''vendor_dw'' limit 30 offset 0 ) x';
+	
+	#select @t_schema;
+	
+	#execute stmt using @t_schema;
+
+	select concat(' --ignore_table=', group_concat(concat(t_schema, '.', table_name) separator ' --ignore_table=')) t into s2
+		from (	select table_name from information_schema.views where table_schema=t_schema limit 10 offset i ) x;
+
+	set s = concat(s, s2);
+
+	set i = i + 10;
+
+end while;
+
+set s = concat(s, ' > ', t_schema, '_bk.sql');
+select s as echo;
+
+end

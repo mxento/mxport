@@ -1,0 +1,22 @@
+CREATE TABLE `report_long_running_process` (
+  `ID_sk` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` int(11) NOT NULL,
+  `USER` varchar(16) NOT NULL DEFAULT '',
+  `HOST` varchar(64) NOT NULL DEFAULT '',
+  `DB` varchar(64) DEFAULT NULL,
+  `COMMAND` varchar(16) NOT NULL DEFAULT '',
+  `TIME` int(7) NOT NULL DEFAULT '0',
+  `STATE` varchar(64) DEFAULT NULL,
+  `INFO` longtext,
+  `GRANTEE` varchar(81) DEFAULT '',
+  `grantee_user` char(16) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `grantee_host` char(60) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `is_super` decimal(23,0) DEFAULT NULL,
+  `is_repl` int(1) NOT NULL DEFAULT '0',
+  `is_current` int(1) NOT NULL DEFAULT '0',
+  `sql_kill_query` varchar(31) DEFAULT NULL,
+  `sql_kill_connection` varchar(25) DEFAULT NULL,
+  `loaded_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID_sk`),
+  UNIQUE KEY `ID_sk_UNIQUE` (`ID_sk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
