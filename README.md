@@ -1,6 +1,6 @@
 mxport
 ======
 
-master_dim : tables and schemas to for a mysql based multi-dimensional data model.
-etl: logging , job checking, and status checking for mysql etl jobs. 
+master_dim folder: tables, functions, views, and schemas to for a mysql based time dimensions data model.
 
+etl folder: logging , job checking, and status checking for mysql etl jobs. 
